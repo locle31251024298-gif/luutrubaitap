@@ -1,40 +1,114 @@
 using System;
 
-public class Student { private string name; private double score; private static int totalStudents = 0;
-
-public Student(string name, double score)
+public class Student
 {
-    this.name = name;
-    this.score = score;
-    totalStudents++;
+    // 1. Fields
+    private string name;
+    private double score;
+    private static int totalStudents = 0;
+
+    // 2. Constructor
+    public Student(string name, double score)
+    {
+        this.name = name;
+        this.score = score;
+        totalStudents++; // Tăng tổng số sinh viên lên 1
+    }
+
+    // 3. Instance Methods
+    public string GetName()
+    {
+        return name;
+    }
+
+    public double GetScore()
+    {
+        return score;
+    }
+
+    public bool IsPassed()
+    {
+        return score >= 5.0;
+    }
+
+    public string GetClassification()
+    {
+        if (score >= 8.0) return "Excellent";
+        if (score >= 6.5) return "Good";
+        if (score >= 5.0) return "Average";
+        return "Weak";
+    }
+
+    // 4. Static Methods
+    public static int GetTotalStudents()
+    {
+        return totalStudents;
+    }
+
+    public static Student FindTopStudent(Student[] students)
+    {
+        Student topStudent = students[0];
+
+        for (int i = 1; i < students.Length; i++)
+        {
+            if (students[i].score > topStudent.score)
+            {
+                topStudent = students[i];
+            }
+        }
+
+        return topStudent;
+    }
+
+    public static double CalculateAverageScore(Student[] students)
+    {
+        double sum = 0;
+
+        for (int i = 0; i < students.Length; i++)
+        {
+            sum += students[i].score;
+        }
+
+        return sum / students.Length;
+    }
 }
 
-// TODO: write instance methods here
-
-public string GetName()
+class Program
 {
-    return name;
-} 
+    static void Main(string[] args)
+    {
+        // 5. Main Program
+        // Tạo danh sách 5 sinh viên
+        Student[] list = new Student[]
+        {
+            new Student("An", 8.5),
+            new Student("Binh", 6.8),
+            new Student("Cuong", 4.5),
+            new Student("Dung", 9.2),
+            new Student("Hoa", 5.5)
+        };
 
-public double GetScore ()
-{
-    return score;
+        // In tổng số sinh viên
+        Console.WriteLine("Tong so sinh vien: " + Student.GetTotalStudents());
+        Console.WriteLine("-----------------------------------");
+
+        // In danh sách và xếp loại
+        Console.WriteLine("Danh sach sinh vien:");
+        for (int i = 0; i < list.Length; i++)
+        {
+            string passStatus = list[i].IsPassed() ? "Dau" : "Rot";
+            Console.WriteLine(list[i].GetName() + " - Diem: " + list[i].GetScore() 
+                + " - Loai: " + list[i].GetClassification() + " - Ket qua: " + passStatus);
+        }
+        Console.WriteLine("-----------------------------------");
+
+        // Tìm sinh viên điểm cao nhất
+        Student top = Student.FindTopStudent(list);
+        Console.WriteLine("Sinh vien diem cao nhat: " + top.GetName() + " (" + top.GetScore() + " diem)");
+
+        // Tính điểm trung bình cả lớp
+        double avg = Student.CalculateAverageScore(list);
+        Console.WriteLine("Diem trung binh ca lop: " + avg);
+    }
 }
-public bool  IsPassed()
-{
-    return score >= 5.0; 
-}
-// score >= 6.5 → "Good"
-// score >= 5.0 → "Average"
 
-public string GetClassification()
-{
-    if (score >= 8.0) return "Excellent";
-    if (score >= 6.5) return "Good";
-    if (score >= 5.0) return "Average";
-    return "Weak";
-
-}
-
-
-// TODO: write static methods here
