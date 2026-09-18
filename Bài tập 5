@@ -1,0 +1,338 @@
+// Bài 1:
+using System;
+using System.Collections.Generic;
+
+class ChuyenXe
+{
+    protected string maSoChuyen;
+    protected string hoTenTaiXe;
+    protected string soXe;
+    protected double doanhThu;
+
+    public ChuyenXe(string maSoChuyen, string hoTenTaiXe,
+                    string soXe, double doanhThu)
+    {
+        this.maSoChuyen = maSoChuyen;
+        this.hoTenTaiXe = hoTenTaiXe;
+        this.soXe = soXe;
+        this.doanhThu = doanhThu;
+    }
+
+    public virtual double TinhDoanhThu()
+    {
+        return doanhThu;
+    }
+}
+
+class ChuyenXeNoiThanh : ChuyenXe
+{
+    private int soTuyen;
+    private double soKm;
+
+    public ChuyenXeNoiThanh(
+        string maSoChuyen,
+        string hoTenTaiXe,
+        string soXe,
+        int soTuyen,
+        double soKm,
+        double doanhThu)
+        : base(maSoChuyen, hoTenTaiXe, soXe, doanhThu)
+    {
+        this.soTuyen = soTuyen;
+        this.soKm = soKm;
+    }
+
+    public override double TinhDoanhThu()
+    {
+        return doanhThu;
+    }
+}
+
+class ChuyenXeNgoaiThanh : ChuyenXe
+{
+    private string noiDen;
+    private int soNgay;
+
+    public ChuyenXeNgoaiThanh(
+        string maSoChuyen,
+        string hoTenTaiXe,
+        string soXe,
+        string noiDen,
+        int soNgay,
+        double doanhThu)
+        : base(maSoChuyen, hoTenTaiXe, soXe, doanhThu)
+    {
+        this.noiDen = noiDen;
+        this.soNgay = soNgay;
+    }
+
+    public override double TinhDoanhThu()
+    {
+        return doanhThu;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<ChuyenXe> danhSach = new List<ChuyenXe>();
+
+        // 2 chuyến nội thành
+        danhSach.Add(new ChuyenXeNoiThanh(
+            "NT01", "Nguyen Van A", "51A-12345",
+            5, 50, 1000000));
+
+        danhSach.Add(new ChuyenXeNoiThanh(
+            "NT02", "Tran Van B", "51B-67890",
+            8, 80, 1500000));
+
+        // 2 chuyến ngoại thành
+        danhSach.Add(new ChuyenXeNgoaiThanh(
+            "NGT01", "Le Van C", "51C-11111",
+            "Vung Tau", 2, 3000000));
+
+        danhSach.Add(new ChuyenXeNgoaiThanh(
+            "NGT02", "Pham Van D", "51D-22222",
+            "Da Lat", 3, 4500000));
+
+        double tongDoanhThu = 0;
+        double doanhThuNoiThanh = 0;
+        double doanhThuNgoaiThanh = 0;
+
+        foreach (ChuyenXe xe in danhSach)
+        {
+            tongDoanhThu += xe.TinhDoanhThu();
+
+            if (xe is ChuyenXeNoiThanh)
+            {
+                doanhThuNoiThanh += xe.TinhDoanhThu();
+            }
+            else if (xe is ChuyenXeNgoaiThanh)
+            {
+                doanhThuNgoaiThanh += xe.TinhDoanhThu();
+            }
+        }
+
+        Console.WriteLine("Tong doanh thu: " + tongDoanhThu);
+        Console.WriteLine("Doanh thu noi thanh: " + doanhThuNoiThanh);
+        Console.WriteLine("Doanh thu ngoai thanh: " + doanhThuNgoaiThanh);
+    }
+}
+// Bài 2 
+using System;
+using System.Collections.Generic;
+
+class Sach
+{
+    protected string maSach;
+    protected DateTime ngayNhap;
+    protected double donGia;
+    protected int soLuong;
+    protected string nhaXuatBan;
+
+    public Sach(
+        string maSach,
+        DateTime ngayNhap,
+        double donGia,
+        int soLuong,
+        string nhaXuatBan)
+    {
+        this.maSach = maSach;
+        this.ngayNhap = ngayNhap;
+        this.donGia = donGia;
+        this.soLuong = soLuong;
+        this.nhaXuatBan = nhaXuatBan;
+    }
+
+    public virtual double ThanhTien()
+    {
+        return soLuong * donGia;
+    }
+
+    public string GetNhaXuatBan()
+    {
+        return nhaXuatBan;
+    }
+}
+
+class SachGiaoKhoa : Sach
+{
+    private string tinhTrang;
+
+    public SachGiaoKhoa(
+        string maSach,
+        DateTime ngayNhap,
+        double donGia,
+        int soLuong,
+        string nhaXuatBan,
+        string tinhTrang)
+        : base(maSach, ngayNhap, donGia, soLuong, nhaXuatBan)
+    {
+        this.tinhTrang = tinhTrang;
+    }
+
+    public override double ThanhTien()
+    {
+        if (tinhTrang.ToLower() == "mới")
+        {
+            return soLuong * donGia;
+        }
+        else
+        {
+            return soLuong * donGia * 0.5;
+        }
+    }
+
+    public void XuatThongTin()
+    {
+        Console.WriteLine(
+            $"{maSach} - {nhaXuatBan} - {tinhTrang} - Thành tiền: {ThanhTien()}");
+    }
+}
+
+class SachThamKhao : Sach
+{
+    private double thue;
+
+    public SachThamKhao(
+        string maSach,
+        DateTime ngayNhap,
+        double donGia,
+        int soLuong,
+        string nhaXuatBan,
+        double thue)
+        : base(maSach, ngayNhap, donGia, soLuong, nhaXuatBan)
+    {
+        this.thue = thue;
+    }
+
+    public override double ThanhTien()
+    {
+        return soLuong * donGia + thue;
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<Sach> danhSach = new List<Sach>();
+
+        // 3 sách giáo khoa
+        danhSach.Add(new SachGiaoKhoa(
+            "SGK01",
+            new DateTime(2026, 9, 1),
+            50000,
+            10,
+            "K",
+            "mới"));
+
+        danhSach.Add(new SachGiaoKhoa(
+            "SGK02",
+            new DateTime(2026, 9, 2),
+            60000,
+            5,
+            "NXB A",
+            "cũ"));
+
+        danhSach.Add(new SachGiaoKhoa(
+            "SGK03",
+            new DateTime(2026, 9, 3),
+            70000,
+            8,
+            "K",
+            "mới"));
+
+        // 3 sách tham khảo
+        danhSach.Add(new SachThamKhao(
+            "STK01",
+            new DateTime(2026, 9, 1),
+            100000,
+            5,
+            "NXB B",
+            20000));
+
+        danhSach.Add(new SachThamKhao(
+            "STK02",
+            new DateTime(2026, 9, 2),
+            120000,
+            3,
+            "NXB C",
+            30000));
+
+        danhSach.Add(new SachThamKhao(
+            "STK03",
+            new DateTime(2026, 9, 3),
+            150000,
+            4,
+            "NXB D",
+            50000));
+
+
+        
+        // 1. TÍNH TỔNG THÀNH TIỀN TỪNG LOẠI
+        
+
+        double tongGiaoKhoa = 0;
+        double tongThamKhao = 0;
+
+        foreach (Sach sach in danhSach)
+        {
+            if (sach is SachGiaoKhoa)
+            {
+                tongGiaoKhoa += sach.ThanhTien();
+            }
+            else if (sach is SachThamKhao)
+            {
+                tongThamKhao += sach.ThanhTien();
+            }
+        }
+
+        Console.WriteLine("Tong thanh tien sach giao khoa: "
+                          + tongGiaoKhoa);
+
+        Console.WriteLine("Tong thanh tien sach tham khao: "
+                          + tongThamKhao);
+
+
+        
+        // 2. XUẤT SGK CỦA NXB K
+        
+
+        Console.Write("\nNhap nha xuat ban K: ");
+        string K = Console.ReadLine();
+
+        Console.WriteLine("\nSach giao khoa cua NXB " + K + ":");
+
+        foreach (Sach sach in danhSach)
+        {
+            if (sach is SachGiaoKhoa)
+            {
+                if (sach.GetNhaXuatBan()
+                       .Equals(K, StringComparison.OrdinalIgnoreCase))
+                {
+                    SachGiaoKhoa sgk = (SachGiaoKhoa)sach;
+                    sgk.XuatThongTin();
+                }
+            }
+        }
+
+
+        
+        // 3. TÌM THÀNH TIỀN CAO NHẤT
+        
+
+        double max = 0;
+
+        foreach (Sach sach in danhSach)
+        {
+            if (sach.ThanhTien() > max)
+            {
+                max = sach.ThanhTien();
+            }
+        }
+
+        Console.WriteLine("\nThanh tien cao nhat: " + max);
+    }
+}
