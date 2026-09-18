@@ -336,3 +336,262 @@ class Program
         Console.WriteLine("\nThanh tien cao nhat: " + max);
     }
 }
+// Bài 3 
+using System;
+using System.Collections.Generic;
+
+class GiaoDich
+{
+    protected string maGiaoDich;
+    protected DateTime ngayGiaoDich;
+    protected double donGia;
+    protected int soLuong;
+
+    public GiaoDich(
+        string maGiaoDich,
+        DateTime ngayGiaoDich,
+        double donGia,
+        int soLuong)
+    {
+        this.maGiaoDich = maGiaoDich;
+        this.ngayGiaoDich = ngayGiaoDich;
+        this.donGia = donGia;
+        this.soLuong = soLuong;
+    }
+
+    public virtual double ThanhTien()
+    {
+        return soLuong * donGia;
+    }
+
+    public int GetSoLuong()
+    {
+        return soLuong;
+    }
+
+    public double GetDonGia()
+    {
+        return donGia;
+    }
+
+    public virtual void Xuat()
+    {
+        Console.WriteLine(
+            $"{maGiaoDich} - {ngayGiaoDich:dd/MM/yyyy} - " +
+            $"Đơn giá: {donGia:N0} - Số lượng: {soLuong}");
+    }
+}
+
+
+
+// GIAO DỊCH VÀNG
+
+
+class GiaoDichVang : GiaoDich
+{
+    private string loaiVang;
+
+    public GiaoDichVang(
+        string maGiaoDich,
+        DateTime ngayGiaoDich,
+        double donGia,
+        int soLuong,
+        string loaiVang)
+        : base(maGiaoDich, ngayGiaoDich, donGia, soLuong)
+    {
+        this.loaiVang = loaiVang;
+    }
+
+    public override double ThanhTien()
+    {
+        return soLuong * donGia;
+    }
+
+    public override void Xuat()
+    {
+        Console.WriteLine(
+            $"[Vàng] {maGiaoDich} - {ngayGiaoDich:dd/MM/yyyy} - " +
+            $"Đơn giá: {donGia:N0} - Số lượng: {soLuong} - " +
+            $"Loại vàng: {loaiVang} - " +
+            $"Thành tiền: {ThanhTien():N0}");
+    }
+}
+
+
+
+// GIAO DỊCH TIỀN TỆ
+
+class GiaoDichTienTe : GiaoDich
+{
+    private double tiGia;
+    private string loaiTienTe;
+
+    public GiaoDichTienTe(
+        string maGiaoDich,
+        DateTime ngayGiaoDich,
+        double donGia,
+        int soLuong,
+        double tiGia,
+        string loaiTienTe)
+        : base(maGiaoDich, ngayGiaoDich, donGia, soLuong)
+    {
+        this.tiGia = tiGia;
+        this.loaiTienTe = loaiTienTe;
+    }
+
+    public override double ThanhTien()
+    {
+        if (loaiTienTe.ToLower() == "vn")
+        {
+            return soLuong * donGia;
+        }
+        else
+        {
+            return soLuong * donGia * tiGia;
+        }
+    }
+
+    public override void Xuat()
+    {
+        Console.WriteLine(
+            $"[Tiền tệ] {maGiaoDich} - {ngayGiaoDich:dd/MM/yyyy} - " +
+            $"Đơn giá: {donGia:N0} - Số lượng: {soLuong} - " +
+            $"Loại tiền: {loaiTienTe} - Tỉ giá: {tiGia:N0} - " +
+            $"Thành tiền: {ThanhTien():N0}");
+    }
+}
+
+
+
+// MAIN
+
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        List<GiaoDich> danhSach = new List<GiaoDich>();
+
+        
+        // TẠO 3 GIAO DỊCH VÀNG
+       
+
+        danhSach.Add(new GiaoDichVang(
+            "V01",
+            new DateTime(2026, 9, 1),
+            80_000_000,
+            2,
+            "24K"));
+
+        danhSach.Add(new GiaoDichVang(
+            "V02",
+            new DateTime(2026, 9, 5),
+            95_000_000,
+            3,
+            "18K"));
+
+        danhSach.Add(new GiaoDichVang(
+            "V03",
+            new DateTime(2026, 9, 10),
+            1_100_000_000,
+            1,
+            "24K"));
+
+
+       
+        // TẠO 3 GIAO DỊCH TIỀN TỆ
+       
+        danhSach.Add(new GiaoDichTienTe(
+            "TT01",
+            new DateTime(2026, 9, 2),
+            25_000,
+            1000,
+            1,
+            "VN"));
+
+        danhSach.Add(new GiaoDichTienTe(
+            "TT02",
+            new DateTime(2026, 9, 6),
+            100,
+            10,
+            25_000,
+            "USD"));
+
+        danhSach.Add(new GiaoDichTienTe(
+            "TT03",
+            new DateTime(2026, 9, 12),
+            200,
+            20,
+            29_000,
+            "Euro"));
+
+
+       
+        // 1. TỔNG SỐ LƯỢNG TỪNG LOẠI
+     
+
+        int tongSoLuongVang = 0;
+        int tongSoLuongTienTe = 0;
+
+        foreach (GiaoDich gd in danhSach)
+        {
+            if (gd is GiaoDichVang)
+            {
+                tongSoLuongVang += gd.GetSoLuong();
+            }
+            else if (gd is GiaoDichTienTe)
+            {
+                tongSoLuongTienTe += gd.GetSoLuong();
+            }
+        }
+
+        Console.WriteLine(" TỔNG SỐ LƯỢNG ");
+
+        Console.WriteLine(
+            "Tổng số lượng giao dịch vàng: "
+            + tongSoLuongVang);
+
+        Console.WriteLine(
+            "Tổng số lượng giao dịch tiền tệ: "
+            + tongSoLuongTienTe);
+
+
+        
+        // 2. TRUNG BÌNH THÀNH TIỀN GIAO DỊCH TIỀN TỆ
+        
+
+        double tongThanhTienTienTe = 0;
+        int demTienTe = 0;
+
+        foreach (GiaoDich gd in danhSach)
+        {
+            if (gd is GiaoDichTienTe)
+            {
+                tongThanhTienTienTe += gd.ThanhTien();
+                demTienTe++;
+            }
+        }
+
+        double trungBinh = tongThanhTienTienTe / demTienTe;
+
+        Console.WriteLine(
+            "\nTrung bình thành tiền giao dịch tiền tệ: "
+            + trungBinh.ToString("N0"));
+
+
+    
+        // 3. XUẤT GIAO DỊCH CÓ ĐƠN GIÁ > 1 TỶ
+    
+
+        Console.WriteLine(
+            "\n GIAO DỊCH CÓ ĐƠN GIÁ > 1 TỶ ");
+
+        foreach (GiaoDich gd in danhSach)
+        {
+            if (gd.GetDonGia() > 1_000_000_000)
+            {
+                gd.Xuat();
+            }
+        }
+    }
+}
